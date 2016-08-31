@@ -11,7 +11,7 @@ import java.time.Duration;
 public abstract class TimeScore implements Score<Duration> {
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(Score o) {
         return 0;
     }
 

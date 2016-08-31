@@ -8,7 +8,7 @@ public class PositionScore implements Score<Number> {
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(Score o) {
         return 0;
     }
 }

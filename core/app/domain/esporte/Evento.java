@@ -51,7 +51,6 @@ public abstract class Evento<S extends Score> {
     }
 
     public Evento withResult(Participante participante, S score) {
-
         Participante participanteScore = ImmutableParticipante.copyOf(participante).withResultado(score);
         Collection<Participante> participantes = getParticipantes().stream()
                 .map(p -> p.equals(participante)? participanteScore : p).collect(Collectors.toList());
