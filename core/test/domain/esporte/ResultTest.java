@@ -6,10 +6,13 @@ import domain.esporte.modalidade.Modalidade;
 import domain.esporte.resultado.*;
 import org.apache.http.annotation.Immutable;
 import org.junit.Test;
+import org.mockito.internal.matchers.Any;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -21,22 +24,30 @@ public class ResultTest {
     @Test
     public void GetVencedorEmpateTest() {
 
-        Equipe santos = mock(Equipe.class);
-        when(santos.getNome()).thenReturn("Santos");
-        Participante santosParticipante = ImmutableParticipante.of(santos)
-                .withResultado(PointScore.with(2));
-        Equipe flamengo = mock(Equipe.class);
-        when(flamengo.getNome()).thenReturn("Flamengo");
-        Participante flamengoParticipante = ImmutableParticipante.of(flamengo)
-                .withResultado(PointScore.with(3));
 
-        Classificacao<PointScore> santosClassificacao = Classificacao.<PointScore>of(santosParticipante, 2L);
-        Classificacao<PointScore> flamengoClassificacao = Classificacao.<PointScore>of(flamengoParticipante, 1L);
+        Classificador classificador = mock(Classificador.class);
+        when(classificador.classificar(any()))
+                .thenReturn(Collections.emptyList());
 
-        Resultados resultados = new Resultados(santosClassificacao, flamengoClassificacao);
+        Regra regra = mock(Regra.class);
+        when(regra.apply(any()))
+                .thenReturn(Resultados.Situacao.EMPATADDO);
 
-        Classificacao vencedor = resultados.getVencedor();
-        assertThat("Flamengo deve ser o vencedor", vencedor, sameInstance(flamengoClassificacao));
+        Participante santosParticipante = mock(Participante.class);
+        Participante flamengoParticipante = mock(Participante.class);
+
+        Resultados resultados = Resultados.of(classificador)
+                .with(regra)
+                .with(santosParticipante, flamengoParticipante)
+                .build();
+
+
+        Optional<Classificacao> vencedor = resultados.getVencedor();
+        assertThat("O empate não tem vencedor", vencedor.isPresent(), is(false));
+
+        Resultados.Situacao situacao = resultados.getSituacao();
+
+        assertThat("Situacao deve ser empatada", situacao, is(Resultados.Situacao.EMPATADDO));
     }
 
     @Test
@@ -51,12 +62,14 @@ public class ResultTest {
         Participante flamengoParticipante = ImmutableParticipante.of(flamengo)
                 .withResultado(PointScore.with(3));
 
-        Classificacao<PointScore> santosClassificacao = Classificacao.<PointScore>of(santosParticipante, 2L);
-        Classificacao<PointScore> flamengoClassificacao = Classificacao.<PointScore>of(flamengoParticipante, 1L);
+        Classificacao<PointScore> santosClassificacao = Classificacao.of(santosParticipante, 2L);
+        Classificacao<PointScore> flamengoClassificacao = Classificacao.of(flamengoParticipante, 1L);
 
         Resultados resultados = new Resultados(santosClassificacao, flamengoClassificacao);
 
-        Classificacao vencedor = resultados.getVencedor();
+        assertTrue("Deve haver um vencedor", resultados.getVencedor().isPresent());
+
+        Classificacao vencedor = resultados.getVencedor().get();
         assertThat("Flamengo deve ser o vencedor", vencedor, sameInstance(flamengoClassificacao));
     }
 

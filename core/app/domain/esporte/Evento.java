@@ -17,8 +17,6 @@ import static org.reflections.util.ConfigurationBuilder.build;
 @Value.Immutable
 public abstract class Evento<S extends Score> {
 
-    ResultadosBuilder<S> builder = ResultadosBuilder.<S>builder(this);
-
     public abstract Modalidade getModalidade();
 
     public abstract LocalDateTime getDataEvento();
@@ -37,7 +35,7 @@ public abstract class Evento<S extends Score> {
     }
 
     public Evento finalizarEvento() throws IllegalStateException {
-        ImmutableEvento.Builder<S> builder = ImmutableEvento.builder();
+        ImmutableEvento.Builder<S> builder = ImmutableEvento.<S>builder().from(this);
         if(!this.isAberto())
             // Verifica se o estado permite ser fianlizado
             throw new IllegalStateException("Somente jogos abertos podem ser finalizados");

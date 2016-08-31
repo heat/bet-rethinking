@@ -1,32 +1,49 @@
 package domain.esporte.resultado;
 
-import com.google.common.collect.ImmutableMap;
-import domain.esporte.Evento;
+import com.google.common.collect.ImmutableSet;
 import domain.esporte.Participante;
 
-public class ResultadosBuilder <S extends Score> {
+public class ResultadosBuilder{
 
-    Evento _evento;
+    private final Classificador _classificador;
+    private Regra _regra;
+    private ImmutableSet<Participante> _participantes;
 
-    ImmutableMap.Builder<Participante, S> scoresBuilder;
-    public ResultadosBuilder(Evento _evento) {
-        this._evento = _evento;
-        this.scoresBuilder = ImmutableMap.builder();
+    public ResultadosBuilder(Classificador classificador) {
+        this._participantes = ImmutableSet.of();
+        this._classificador = classificador;
     }
 
-    public Resultados build(){
-        return null;
-    }
-
-    public ResultadosBuilder add(Participante participante, S score) {
-        if(_evento.isPartcipantePresent(participante))
-        {
-            scoresBuilder.put(participante, score);
-        }
+    public ResultadosBuilder with(Participante... participantes) {
+        this._participantes = ImmutableSet.<Participante>builder()
+                .addAll(this._participantes)
+                .add(participantes)
+                .build();
         return this;
     }
 
-    public static <S extends Score> ResultadosBuilder<S> builder(Evento<S> evento) {
-        return new ResultadosBuilder<S>(evento);
+    public ResultadosBuilder with(Regra regra) {
+        this._regra = regra;
+        return this;
+    }
+
+    public Resultados build() {
+        if(_regra == null || _participantes == null || _participantes.isEmpty())
+            throw new IllegalStateException("Sem os parametros necessarios");
+
+        Resultados.Situacao situacao = _regra.apply(_classificador.classificar(_participantes));
+
+        switch (situacao) {
+
+            case ABERTO:
+                break;
+            case DETERMINADO:
+                break;
+            case EMPATADDO:
+                return new ResultadosEmpate();
+            case INDETERMINADO:
+                break;
+        }
+        return null;
     }
 }
