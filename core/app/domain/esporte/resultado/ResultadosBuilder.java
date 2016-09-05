@@ -3,6 +3,8 @@ package domain.esporte.resultado;
 import com.google.common.collect.ImmutableSet;
 import domain.esporte.Participante;
 
+import java.util.List;
+
 public class ResultadosBuilder{
 
     private final Classificador _classificador;
@@ -31,14 +33,15 @@ public class ResultadosBuilder{
         if(_regra == null || _participantes == null || _participantes.isEmpty())
             throw new IllegalStateException("Sem os parametros necessarios");
 
-        Resultados.Situacao situacao = _regra.apply(_classificador.classificar(_participantes));
+        List<Classificacao> classificacao = _classificador.classificar(_participantes);
+        Resultados.Situacao situacao = _regra.apply(classificacao);
 
         switch (situacao) {
 
             case ABERTO:
                 break;
             case DETERMINADO:
-                break;
+                return new ResultadosFinal(classificacao);
             case EMPATADDO:
                 return new ResultadosEmpate();
             case INDETERMINADO:

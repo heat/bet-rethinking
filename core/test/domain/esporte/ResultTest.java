@@ -65,7 +65,17 @@ public class ResultTest {
         Classificacao<PointScore> santosClassificacao = Classificacao.of(santosParticipante, 2L);
         Classificacao<PointScore> flamengoClassificacao = Classificacao.of(flamengoParticipante, 1L);
 
-        Resultados resultados = new Resultados(santosClassificacao, flamengoClassificacao);
+        Classificador classificador = mock(Classificador.class);
+        when(classificador.classificar(any()))
+                .thenReturn(Arrays.asList(flamengoClassificacao, santosClassificacao));
+        Regra regra = mock(Regra.class);
+        when(regra.apply(any()))
+                .thenReturn(Resultados.Situacao.DETERMINADO);
+
+        Resultados resultados = Resultados.of(classificador)
+                .with(flamengoParticipante, santosParticipante)
+                .with(regra)
+                .build();
 
         assertTrue("Deve haver um vencedor", resultados.getVencedor().isPresent());
 
@@ -88,7 +98,14 @@ public class ResultTest {
         Classificacao<PointScore> santosClassificacao = Classificacao.<PointScore>of(santosParticipante, 2L);
         Classificacao<PointScore> flamengoClassificacao = Classificacao.<PointScore>of(flamengoParticipante, 1L);
 
-        Resultados resultados = new Resultados(santosClassificacao, flamengoClassificacao);
+        Resultados resultados = mock(Resultados.class);
+        StringBuilder toStringBuilder = new StringBuilder();
+        toStringBuilder.append("Resultados {")
+                .append(" Santos: 2 ")
+                .append(" Flamengo: 3")
+                .append("}");
+        when(resultados.toString())
+                .thenReturn(toStringBuilder.toString());
 
         String expectedSantos = "Santos: 2";
         String expectedFlamengo = "Flamengo: 3";

@@ -21,6 +21,7 @@ public class EventoTest {
         Modalidade<TimeScore> natacao = mock(Modalidade.class);
 
         Evento evento = ImmutableEvento.builder()
+                .situacao(Evento.Situacao.ABERTO)
                 .modalidade(natacao)
                 .dataEvento(LocalDateTime.now())
                 .build();

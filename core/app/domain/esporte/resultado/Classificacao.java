@@ -6,6 +6,8 @@ import org.immutables.value.Value;
 
 public class Classificacao<T> implements Comparable<Classificacao> {
 
+    final static long PRIMEIRO = 1L;
+
     final Participante _participante;
 
     final Long _posicao;
