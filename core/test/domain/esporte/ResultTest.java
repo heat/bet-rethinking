@@ -22,6 +22,31 @@ import static org.mockito.Mockito.*;
 public class ResultTest {
 
     @Test
+    public void ResultadosIndeterminadosTest() {
+        Classificador classificador = mock(Classificador.class);
+        when(classificador.classificar(any()))
+                .thenReturn(Collections.emptyList());
+
+        Regra regra = mock(Regra.class);
+        when(regra.apply(any()))
+                .thenReturn(Resultados.Situacao.INDETERMINADO);
+
+        Participante participante = mock(Participante.class);
+
+        Resultados resultados = Resultados.of(classificador)
+                .with(regra)
+                .with(participante)
+                .build();
+
+        Optional<Classificacao> vencedor = resultados.getVencedor();
+        assertThat("O jogo indeterminado não tem vencedor", vencedor.isPresent(), is(false));
+
+        Resultados.Situacao situacao = resultados.getSituacao();
+
+        assertThat("Situacao deve ser indeterminada", situacao, is(Resultados.Situacao.INDETERMINADO));
+    }
+
+    @Test
     public void GetVencedorEmpateTest() {
 
 

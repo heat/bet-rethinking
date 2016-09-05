@@ -45,7 +45,7 @@ public class ResultadosBuilder{
             case EMPATADDO:
                 return new ResultadosEmpate();
             case INDETERMINADO:
-                break;
+                return new ResultadosIndeterminado();
         }
         return null;
     }
