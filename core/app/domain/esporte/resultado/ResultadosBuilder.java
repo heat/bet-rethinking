@@ -3,7 +3,9 @@ package domain.esporte.resultado;
 import com.google.common.collect.ImmutableSet;
 import domain.esporte.Participante;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class ResultadosBuilder{
 
@@ -14,6 +16,10 @@ public class ResultadosBuilder{
     public ResultadosBuilder(Classificador classificador) {
         this._participantes = ImmutableSet.of();
         this._classificador = classificador;
+    }
+
+    public ResultadosBuilder with(Set<Participante> participantes) {
+        return  with(participantes.toArray(new Participante[]{}));
     }
 
     public ResultadosBuilder with(Participante... participantes) {
