@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.immutables" % "value" % "2.2.12",
   "org.immutables" % "builder" % "2.2.12",
+  "black.door" % "hate" % "v1r4t0",
   "org.mockito" % "mockito-core" % "1.10.19" % "test"
 )

@@ -41,6 +41,10 @@ public abstract class Evento<S extends Score> {
         return this.getSituacao() == Situacao.ABERTO;
     }
 
+    public String getNomeModalide() {
+        return getModalidade().getNome();
+    }
+
     /**
      * Finaliza o evento calculando o resultado
      *

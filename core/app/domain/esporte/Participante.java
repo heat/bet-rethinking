@@ -14,4 +14,8 @@ public interface Participante {
 
     @Value.Auxiliary
     abstract Optional<Score> getResultado();
+
+    default String getNome() {
+        return getEquipe().getNome();
+    }
 }
